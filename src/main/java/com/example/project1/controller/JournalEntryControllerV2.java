@@ -1,5 +1,6 @@
 package com.example.project1.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import com.example.project1.entity.JournalEntry;
 import com.example.project1.services.JournalEntryService;
@@ -60,8 +61,13 @@ public class JournalEntryControllerV2 {
     }
 
     @GetMapping ("/{jId}")
-    public Optional<JournalEntry> findById(@PathVariable String jId){
-        return Optional.ofNullable(journalEntryService.findById(new ObjectId(jId)).orElse(null));
+    public ResponseEntity<JournalEntry> findById(@PathVariable String jId){
+//        return Optional.ofNullable(journalEntryService.findById(new ObjectId(jId)).orElse(null));
+        Optional<JournalEntry> journalEntry = journalEntryService.findById(new ObjectId(jId));
+        if(journalEntry.isPresent()){
+            return new ResponseEntity<>(journalEntry.get(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
 }
